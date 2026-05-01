@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports · Trading Journal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@300;400;500&family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0d12;
+      --surface: #111620;
+      --card: #161c28;
+      --border: #1e2738;
+      --accent: #00e5a0;
+      --accent2: #3b82f6;
+      --red: #f43f5e;
+      --text: #e2e8f0;
+      --text2: #8892a4;
+      --gold: #f59e0b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans JP', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+
+    .top-nav {
+      margin-bottom: 28px;
+    }
+
+    .back-link {
+      display: inline-block;
+      text-decoration: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      background: rgba(0,229,160,.08);
+      border: 1px solid rgba(0,229,160,.25);
+      border-radius: 999px;
+      padding: 8px 13px;
+      transition: background .2s ease, border-color .2s ease;
+    }
+
+    .back-link:hover {
+      background: rgba(0,229,160,.14);
+      border-color: var(--accent);
+    }
+
+    .badge {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 11px;
+      letter-spacing: .2em;
+      color: var(--accent);
+      background: rgba(0,229,160,.08);
+      border: 1px solid rgba(0,229,160,.25);
+      padding: 5px 13px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Unbounded', sans-serif;
+      font-size: clamp(32px, 6vw, 64px);
+      line-height: .95;
+      letter-spacing: -.04em;
+      color: #fff;
+      margin-bottom: 18px;
+    }
+
+    h1 span { color: var(--accent); }
+
+    .lead {
+      color: var(--text2);
+      font-size: 15px;
+      line-height: 1.8;
+      max-width: 720px;
+      margin-bottom: 44px;
+    }
+
+    .section-title {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 11px;
+      letter-spacing: .2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 42px 0 20px;
+    }
+
+    .section-title::after {
+      content: '';
+      height: 1px;
+      background: var(--border);
+      flex: 1;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .note {
+      color: var(--text2);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .refresh {
+      cursor: pointer;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      background: rgba(0,229,160,.08);
+      border: 1px solid rgba(0,229,160,.35);
+      border-radius: 999px;
+      padding: 9px 14px;
+      transition: background .2s ease, border-color .2s ease;
+    }
+
+    .refresh:hover {
+      background: rgba(0,229,160,.14);
+      border-color: var(--accent);
+    }
+
+    .report-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .report-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .report-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      background: #1a2032;
+    }
+
+    .report-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--accent), transparent);
+    }
+
+    .report-name {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 15px;
+      line-height: 1.45;
+      color: #fff;
+      word-break: break-word;
+      margin-bottom: 6px;
+    }
+
+    .report-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text2);
+      word-break: break-all;
+    }
+
+    .report-open {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      border: 1px solid rgba(0,229,160,.28);
+      background: rgba(0,229,160,.08);
+      border-radius: 999px;
+      padding: 8px 12px;
+      white-space: nowrap;
+    }
+
+    .empty,
+    .loading {
+      background: rgba(22,28,40,.5);
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      color: var(--text2);
+      line-height: 1.8;
+      font-size: 13px;
+    }
+
+    .loading {
+      font-family: 'DM Mono', monospace;
+    }
+
+    .error {
+      background: rgba(244,63,94,.08);
+      border: 1px solid rgba(244,63,94,.28);
+      border-radius: 16px;
+      padding: 24px;
+      color: #fda4af;
+      line-height: 1.8;
+      font-size: 13px;
+    }
+
+    .footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: #4a5568;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .04em;
+    }
+
+    @media (max-width: 700px) {
+      .report-item {
+        grid-template-columns: 1fr;
+      }
+
+      .report-open {
+        width: fit-content;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="wrapper">
+    <div class="top-nav">
+      <a class="back-link" href="index.html">← Back to Journal</a>
+    </div>
+
+    <div class="badge">HTML REPORTS</div>
+
+    <h1>Report<br><span>Archive</span></h1>
+
+    <p class="lead">
+      reports フォルダ内のHTMLレポートを自動で一覧表示します。ファイル名をクリックすると週次レポートを開けます。
+    </p>
+
+    <div class="section-title">Report List</div>
+
+    <div class="toolbar">
+      <p class="note">
+        <strong>reports/</strong> フォルダ内のHTMLファイルをGitHubから読み込みます。
+      </p>
+
+      <button class="refresh" type="button" onclick="loadReports()">
+        Reload
+      </button>
+    </div>
+
+    <section id="reportList" class="report-list">
+      <div class="loading">Loading report list from GitHub...</div>
+    </section>
+
+    <div class="section-title">How to Add</div>
+
+    <div class="empty">
+      新しいHTMLレポートを追加するときは、GitHubの <strong>reports/</strong> フォルダにアップロードしてください。<br>
+      例：<strong>reports/2026-W19.html</strong>、<strong>reports/2026-05-04.html</strong><br>
+      アップロード後、このページを再読み込みすると一覧に表示されます。
+    </div>
+
+    <div class="footer">Generated for GitHub Pages · HTML report index</div>
+  </main>
+
+  <script>
+    const GITHUB_API_URL = 'https://api.github.com/repos/LeeZYZY/trading-journal/contents/reports';
+
+    function formatFileSize(bytes) {
+      if (!bytes && bytes !== 0) return '';
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+    }
+
+    function prettyReportName(fileName) {
+      return fileName
+        .replace(/\.html$/i, '')
+        .replace(/[-_]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function makeReportUrl(fileName) {
+      return 'reports/' + encodeURIComponent(fileName);
+    }
+
+    function renderReportItem(file) {
+      const reportUrl = makeReportUrl(file.name);
+      const title = prettyReportName(file.name);
+      const size = formatFileSize(file.size);
+
+      return `
+        <a class="report-item" href="${reportUrl}">
+          <div>
+            <div class="report-name">${title}</div>
+            <div class="report-meta">${file.name}${size ? ' · ' + size : ''}</div>
+          </div>
+          <div class="report-open">Open Report</div>
+        </a>
+      `;
+    }
+
+    async function loadReports() {
+      const reportList = document.getElementById('reportList');
+
+      reportList.innerHTML = '<div class="loading">Loading report list from GitHub...</div>';
+
+      try {
+        const response = await fetch(GITHUB_API_URL, {
+          headers: {
+            'Accept': 'application/vnd.github+json'
+          }
+        });
+
+        if (response.status === 404) {
+          reportList.innerHTML = `
+            <div class="empty">
+              <strong>reports/</strong> フォルダがまだ見つかりません。<br>
+              GitHubで <strong>reports/.gitkeep</strong> を作るか、HTMLレポートを1つアップロードしてください。
+            </div>
+          `;
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('GitHub API error: ' + response.status);
+        }
+
+        const files = await response.json();
+
+        const htmlFiles = files
+          .filter(file => file.type === 'file' && file.name.toLowerCase().endsWith('.html'))
+          .sort((a, b) => b.name.localeCompare(a.name));
+
+        if (htmlFiles.length === 0) {
+          reportList.innerHTML = `
+            <div class="empty">
+              <strong>reports/</strong> フォルダ内にHTMLレポートがありません。<br>
+              HTMLファイルをアップロードすると、ここに自動表示されます。
+            </div>
+          `;
+          return;
+        }
+
+        reportList.innerHTML = htmlFiles.map(renderReportItem).join('');
+
+      } catch (error) {
+        console.error(error);
+
+        reportList.innerHTML = `
+          <div class="error">
+            HTMLレポート一覧の読み込みに失敗しました。<br>
+            GitHub Pagesの反映待ち、API制限、または <strong>reports/</strong> フォルダ名を確認してください。<br>
+            Error: ${error.message}
+          </div>
+        `;
+      }
+    }
+
+    loadReports();
+  </script>
+</body>
+</html>
