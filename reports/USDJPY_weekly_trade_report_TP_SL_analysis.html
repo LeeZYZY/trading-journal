@@ -1,0 +1,923 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>USDJPY 本周交易复盘报告 - 止盈单与止损单逐笔分析</title>
+<style>
+  :root {
+    --text:#111827;
+    --muted:#4b5563;
+    --line:#d1d5db;
+    --soft:#f9fafb;
+    --head:#f3f4f6;
+    --green:#ecfdf5;
+    --red:#fef2f2;
+    --green-text:#065f46;
+    --red-text:#991b1b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 28px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans CJK SC", "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
+    color: var(--text);
+    background: white;
+    line-height: 1.45;
+    font-size: 14px;
+  }
+  h1 { font-size: 26px; margin: 0 0 8px; }
+  h2 { font-size: 20px; margin: 28px 0 10px; border-left: 5px solid #111827; padding-left: 10px; }
+  h3 { font-size: 16px; margin: 18px 0 8px; }
+  p { margin: 6px 0; }
+  .muted { color: var(--muted); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(130px, 1fr));
+    gap: 10px;
+    margin: 16px 0 22px;
+  }
+  .card {
+    border: 1px solid var(--line);
+    background: var(--soft);
+    padding: 12px;
+    border-radius: 8px;
+  }
+  .label { color: var(--muted); font-size: 12px; }
+  .value { font-size: 20px; font-weight: 700; margin-top: 2px; }
+  .pos { color: var(--green-text); font-weight: 700; }
+  .neg { color: var(--red-text); font-weight: 700; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 18px;
+    table-layout: fixed;
+  }
+  th, td {
+    border: 1px solid var(--line);
+    padding: 7px 8px;
+    vertical-align: top;
+    color: #111827;
+    background: #fff;
+    word-wrap: break-word;
+  }
+  th {
+    background: var(--head);
+    font-weight: 700;
+    text-align: left;
+  }
+  .compact th, .compact td { padding: 6px 7px; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .price { font-variant-numeric: tabular-nums; }
+  .win td { background: var(--green); }
+  .loss td { background: var(--red); }
+  .sub { font-size: 12px; color: var(--muted); }
+  .tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border: 1px solid #9ca3af;
+    border-radius: 10px;
+    background: white;
+    font-size: 12px;
+    font-weight: 700;
+    color: #111827;
+  }
+  .note {
+    border: 1px solid var(--line);
+    background: #fff;
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin: 10px 0;
+  }
+  ul { margin: 8px 0 8px 22px; padding: 0; }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .wide-table th:nth-child(1), .wide-table td:nth-child(1) { width: 42px; }
+  .wide-table th:nth-child(2), .wide-table td:nth-child(2) { width: 105px; }
+  .wide-table th:nth-child(3), .wide-table td:nth-child(3) { width: 80px; }
+  .wide-table th:nth-child(4), .wide-table td:nth-child(4) { width: 82px; }
+  .wide-table th:nth-child(5), .wide-table td:nth-child(5) { width: 112px; }
+  .wide-table th:nth-child(6), .wide-table td:nth-child(6) { width: 66px; }
+  .wide-table th:nth-child(7), .wide-table td:nth-child(7) { width: 76px; }
+  .wide-table th:nth-child(8), .wide-table td:nth-child(8) { width: 98px; }
+  .wide-table th:nth-child(12), .wide-table td:nth-child(12) { width: 50px; }
+  @media print {
+    body { margin: 14mm; font-size: 12px; }
+    h2 { break-before: auto; }
+    table { page-break-inside: auto; }
+    tr { page-break-inside: avoid; page-break-after: auto; }
+    .grid { grid-template-columns: repeat(3, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <h1>USDJPY 本周交易复盘报告</h1>
+  <p class="muted">期间：2026/04/27 - 2026/05/01 ｜ 数据：用户提供的交易记录与USDJPY 1分钟Bid K线 ｜ 换算：1 JPY = 0.1 pips</p>
+
+  <div class="grid">
+    <div class="card"><div class="label">总交易数</div><div class="value">40 笔</div></div>
+    <div class="card"><div class="label">胜率</div><div class="value">60.0%</div></div>
+    <div class="card"><div class="label">当周净损益</div><div class="value pos">+174 JPY</div></div>
+    <div class="card"><div class="label">盈利因子</div><div class="value">2.76</div></div>
+    <div class="card"><div class="label">平均盈利 / 平均亏损</div><div class="value">+11.4 / -6.2</div></div>
+    <div class="card"><div class="label">中位持仓</div><div class="value">19.5s</div></div>
+  </div>
+
+  <div class="note">
+    <b>核心结论：</b>本周交易整体为正收益。优势最集中在A类“边缘衰竭反转”和B类“顺势动能跟随”：A/B类合计贡献主要利润。问题集中在D类“提前猜顶/猜底”、E类“追尾”和F类“持仓逻辑偏移”。止损半径总体很小，但少数异常止损对总亏损影响较大。止盈单的核心目标约为 +10 JPY，即约 +1.0 pips。
+  </div>
+
+  <h2>一、每日统计</h2>
+  <table class="compact">
+    <thead><tr><th>日期</th><th>笔数</th><th>胜率</th><th>总盈利</th><th>总亏损</th><th>净损益</th><th>平均盈利</th><th>平均亏损</th><th>平均持仓</th></tr></thead>
+    <tbody>
+    <tr>
+      <td>2026-04-27</td>
+      <td class="num">9</td>
+      <td class="num">55.6%</td>
+      <td class="num">+56</td>
+      <td class="num">-15</td>
+      <td class="num pos">+41</td>
+      <td class="num">11.2</td>
+      <td class="num">-3.8</td>
+      <td class="num">67.7s</td>
+    </tr>
+    <tr>
+      <td>2026-04-28</td>
+      <td class="num">5</td>
+      <td class="num">80.0%</td>
+      <td class="num">+41</td>
+      <td class="num">-1</td>
+      <td class="num pos">+40</td>
+      <td class="num">10.2</td>
+      <td class="num">-1.0</td>
+      <td class="num">34.6s</td>
+    </tr>
+    <tr>
+      <td>2026-04-29</td>
+      <td class="num">13</td>
+      <td class="num">46.2%</td>
+      <td class="num">+66</td>
+      <td class="num">-73</td>
+      <td class="num neg">-7</td>
+      <td class="num">11.0</td>
+      <td class="num">-10.4</td>
+      <td class="num">182.8s</td>
+    </tr>
+    <tr>
+      <td>2026-04-30</td>
+      <td class="num">6</td>
+      <td class="num">50.0%</td>
+      <td class="num">+28</td>
+      <td class="num">-9</td>
+      <td class="num pos">+19</td>
+      <td class="num">9.3</td>
+      <td class="num">-3.0</td>
+      <td class="num">13.3s</td>
+    </tr>
+    <tr>
+      <td>2026-05-01</td>
+      <td class="num">7</td>
+      <td class="num">85.7%</td>
+      <td class="num">+82</td>
+      <td class="num">-1</td>
+      <td class="num pos">+81</td>
+      <td class="num">13.7</td>
+      <td class="num">-1.0</td>
+      <td class="num">13.0s</td>
+    </tr></tbody>
+  </table>
+
+  <h2>二、分类统计</h2>
+  <table class="compact">
+    <thead><tr><th>分类</th><th>笔数</th><th>胜率</th><th>净损益</th><th>单笔平均</th><th>平均持仓</th></tr></thead>
+    <tbody>
+    <tr>
+      <td><span class="tag">A</span></td>
+      <td class="num">16</td>
+      <td class="num">100.0%</td>
+      <td class="num pos">+172</td>
+      <td class="num">10.8</td>
+      <td class="num">47.6s</td>
+    </tr>
+    <tr>
+      <td><span class="tag">A/B</span></td>
+      <td class="num">1</td>
+      <td class="num">100.0%</td>
+      <td class="num pos">+30</td>
+      <td class="num">30.0</td>
+      <td class="num">17.0s</td>
+    </tr>
+    <tr>
+      <td><span class="tag">B</span></td>
+      <td class="num">5</td>
+      <td class="num">100.0%</td>
+      <td class="num pos">+42</td>
+      <td class="num">8.4</td>
+      <td class="num">10.0s</td>
+    </tr>
+    <tr>
+      <td><span class="tag">C</span></td>
+      <td class="num">4</td>
+      <td class="num">25.0%</td>
+      <td class="num neg">-5</td>
+      <td class="num">-1.2</td>
+      <td class="num">55.2s</td>
+    </tr>
+    <tr>
+      <td><span class="tag">C/D</span></td>
+      <td class="num">1</td>
+      <td class="num">0.0%</td>
+      <td class="num neg">-4</td>
+      <td class="num">-4.0</td>
+      <td class="num">8.0s</td>
+    </tr>
+    <tr>
+      <td><span class="tag">C/E</span></td>
+      <td class="num">1</td>
+      <td class="num">0.0%</td>
+      <td class="num neg">-2</td>
+      <td class="num">-2.0</td>
+      <td class="num">13.0s</td>
+    </tr>
+    <tr>
+      <td><span class="tag">D</span></td>
+      <td class="num">7</td>
+      <td class="num">0.0%</td>
+      <td class="num neg">-53</td>
+      <td class="num">-7.6</td>
+      <td class="num">19.1s</td>
+    </tr>
+    <tr>
+      <td><span class="tag">E</span></td>
+      <td class="num">3</td>
+      <td class="num">0.0%</td>
+      <td class="num neg">-12</td>
+      <td class="num">-4.0</td>
+      <td class="num">77.3s</td>
+    </tr>
+    <tr>
+      <td><span class="tag">F</span></td>
+      <td class="num">1</td>
+      <td class="num">0.0%</td>
+      <td class="num neg">-20</td>
+      <td class="num">-20.0</td>
+      <td class="num">715.0s</td>
+    </tr>
+    <tr>
+      <td><span class="tag">F/A</span></td>
+      <td class="num">1</td>
+      <td class="num">100.0%</td>
+      <td class="num pos">+26</td>
+      <td class="num">26.0</td>
+      <td class="num">1179.0s</td>
+    </tr></tbody>
+  </table>
+  <p class="muted">分类说明：A=边缘衰竭反转；B=顺势跟随；C=震荡试单；D=提前猜顶/猜底；E=追尾；F=持仓逻辑偏移。</p>
+
+  <h2>三、止盈单逐笔分析（24笔）</h2>
+  <p>止盈单总盈利 <b class="pos">+273 JPY</b>，平均止盈 <b>+11.4 JPY</b>，中位止盈 <b>+10.0 JPY</b>。</p>
+  <table class="wide-table">
+    <thead>
+      <tr>
+        <th>#</th><th>入场时间</th><th>出场</th><th>方向</th><th>价格</th><th>持仓</th><th>盈亏</th><th>单型</th><th>入场时机</th><th>离场时机</th><th>评价 / 改进</th><th>评分</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr class="win">
+      <td class="num">2</td>
+      <td>04/27 08:32:22</td>
+      <td>08:34:29</td>
+      <td>卖 / Short</td>
+      <td class="price">159.58 → 159.574</td>
+      <td class="num">127s</td>
+      <td class="num">+6<br><span class="sub">+0.6 pips</span></td>
+      <td><span class="tag">A</span><br>冲高失败空</td>
+      <td>接近前5分钟高点，属于高位衰竭后做空。</td>
+      <td>安全落袋，但127秒只拿+6，效率一般。</td>
+      <td>方向正确；可考虑目标至少看回到区间中位/前低。</td>
+      <td class="num">7.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">4</td>
+      <td>04/27 09:08:45</td>
+      <td>09:09:28</td>
+      <td>卖 / Short</td>
+      <td class="price">159.55 → 159.535</td>
+      <td class="num">43s</td>
+      <td class="num">+15<br><span class="sub">+1.5 pips</span></td>
+      <td><span class="tag">A</span><br>冲高失败空</td>
+      <td>几乎空在1分钟上沿和前5分钟高点，失败信号清晰。</td>
+      <td>43秒+15，效率高。</td>
+      <td>优质样本；入场和离场都符合短线节奏。</td>
+      <td class="num">9.0</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">6</td>
+      <td>04/27 09:53:39</td>
+      <td>09:56:15</td>
+      <td>卖 / Short</td>
+      <td class="price">159.516 → 159.512</td>
+      <td class="num">156s</td>
+      <td class="num">+4<br><span class="sub">+0.4 pips</span></td>
+      <td><span class="tag">A</span><br>9:55冲高回落空</td>
+      <td>9:55附近上冲后做空，逻辑对。</td>
+      <td>156秒只拿+4，出场过早或目标太小。</td>
+      <td>方向对但收益没有兑现；这是低效率小止盈。</td>
+      <td class="num">7.0</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">8</td>
+      <td>04/27 10:05:30</td>
+      <td>10:05:34</td>
+      <td>买 / Long</td>
+      <td class="price">159.357 → 159.368</td>
+      <td class="num">4s</td>
+      <td class="num">+11<br><span class="sub">+1.1 pips</span></td>
+      <td><span class="tag">A</span><br>急跌末端反弹多</td>
+      <td>急跌后在低位做反弹，位置好。</td>
+      <td>4秒+11，秒级验证优秀。</td>
+      <td>优质样本；反弹单必须继续保持快速验证。</td>
+      <td class="num">9.0</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">9</td>
+      <td>04/27 10:09:43</td>
+      <td>10:09:49</td>
+      <td>卖 / Short</td>
+      <td class="price">159.446 → 159.426</td>
+      <td class="num">6s</td>
+      <td class="num">+20<br><span class="sub">+2.0 pips</span></td>
+      <td><span class="tag">A</span><br>反弹后再空</td>
+      <td>等反弹到159.44附近再空，而非低位追空。</td>
+      <td>6秒+20，效率极高。</td>
+      <td>优质样本；位置、反馈、出场都好。</td>
+      <td class="num">9.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">10</td>
+      <td>04/28 08:51:46</td>
+      <td>08:52:01</td>
+      <td>卖 / Short</td>
+      <td class="price">159.406 → 159.396</td>
+      <td class="num">15s</td>
+      <td class="num">+10<br><span class="sub">+1.0 pips</span></td>
+      <td><span class="tag">B</span><br>下行动能空</td>
+      <td>08:51 1分钟线明显下压，顺短线动能。</td>
+      <td>15秒+10，合理。</td>
+      <td>反馈快；后续虽有空间，但短打无问题。</td>
+      <td class="num">8.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">11</td>
+      <td>04/28 09:20:48</td>
+      <td>09:21:10</td>
+      <td>卖 / Short</td>
+      <td class="price">159.379 → 159.377</td>
+      <td class="num">22s</td>
+      <td class="num">+2<br><span class="sub">+0.2 pips</span></td>
+      <td><span class="tag">A</span><br>冲高回落空</td>
+      <td>价格从低位上冲到159.379附近后做空，位置不错。</td>
+      <td>只拿+2太保守。</td>
+      <td>方向正确，但止盈过小，低效率。</td>
+      <td class="num">6.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">13</td>
+      <td>04/28 09:55:00</td>
+      <td>09:56:39</td>
+      <td>卖 / Short</td>
+      <td class="price">159.471 → 159.461</td>
+      <td class="num">99s</td>
+      <td class="num">+10<br><span class="sub">+1.0 pips</span></td>
+      <td><span class="tag">A</span><br>9:55冲高回落空</td>
+      <td>09:50后上冲，9:55附近做冲高回落。</td>
+      <td>+10可以，持仓99秒中等。</td>
+      <td>价格目标与时间窗口结合较好。</td>
+      <td class="num">8.0</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">14</td>
+      <td>04/28 12:35:04</td>
+      <td>12:35:23</td>
+      <td>买 / Long</td>
+      <td class="price">158.993 → 159.012</td>
+      <td class="num">19s</td>
+      <td class="num">+19<br><span class="sub">+1.9 pips</span></td>
+      <td><span class="tag">A</span><br>急跌末端反弹多</td>
+      <td>12:30后急跌到158.982附近，在低点上方做反弹。</td>
+      <td>19秒+19，出场干净。</td>
+      <td>优质样本；位置非常好。</td>
+      <td class="num">9.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">17</td>
+      <td>04/29 10:08:59</td>
+      <td>10:10:12</td>
+      <td>卖 / Short</td>
+      <td class="price">159.649 → 159.639</td>
+      <td class="num">73s</td>
+      <td class="num">+10<br><span class="sub">+1.0 pips</span></td>
+      <td><span class="tag">A</span><br>确认后冲高回落空</td>
+      <td>159.661高点打出后不再扩展，再做回落空，确认度更好。</td>
+      <td>+10合理。</td>
+      <td>同一组里最正确的一笔；前两笔试错成本过高。</td>
+      <td class="num">8.0</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">18</td>
+      <td>04/29 10:11:14</td>
+      <td>10:11:23</td>
+      <td>卖 / Short</td>
+      <td class="price">159.633 → 159.629</td>
+      <td class="num">9s</td>
+      <td class="num">+4<br><span class="sub">+0.4 pips</span></td>
+      <td><span class="tag">B</span><br>回落延续短打空</td>
+      <td>10点上冲后的第二段回落延续。</td>
+      <td>9秒+4合理，不宜恋战。</td>
+      <td>空间有限，短打可以。</td>
+      <td class="num">7.0</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">21</td>
+      <td>04/29 10:31:20</td>
+      <td>10:31:40</td>
+      <td>买 / Long</td>
+      <td class="price">159.586 → 159.597</td>
+      <td class="num">20s</td>
+      <td class="num">+11<br><span class="sub">+1.1 pips</span></td>
+      <td><span class="tag">A</span><br>急跌末端反弹多</td>
+      <td>前一笔后再等到更低位置，反弹更成立。</td>
+      <td>20秒+11，符合优势模型。</td>
+      <td>如果能跳过上一笔会更好。</td>
+      <td class="num">8.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">25</td>
+      <td>04/29 11:18:41</td>
+      <td>11:19:47</td>
+      <td>买 / Long</td>
+      <td class="price">159.577 → 159.59</td>
+      <td class="num">66s</td>
+      <td class="num">+13<br><span class="sub">+1.3 pips</span></td>
+      <td><span class="tag">A</span><br>区间下沿反弹多</td>
+      <td>前5分钟低位附近做反弹，位置好。</td>
+      <td>+13合理。</td>
+      <td>4/29较高质量样本。</td>
+      <td class="num">8.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">26</td>
+      <td>04/29 15:53:10</td>
+      <td>15:54:32</td>
+      <td>卖 / Short</td>
+      <td class="price">159.652 → 159.65</td>
+      <td class="num">82s</td>
+      <td class="num">+2<br><span class="sub">+0.2 pips</span></td>
+      <td><span class="tag">A</span><br>反弹高位空</td>
+      <td>反弹到159.65附近做空，位置不错。</td>
+      <td>只拿+2，偏早。</td>
+      <td>方向对但低效率，后续给过更多空间。</td>
+      <td class="num">6.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">27</td>
+      <td>04/29 16:01:32</td>
+      <td>16:21:11</td>
+      <td>买 / Long</td>
+      <td class="price">159.667 → 159.693</td>
+      <td class="num">1179s</td>
+      <td class="num">+26<br><span class="sub">+2.6 pips</span></td>
+      <td><span class="tag">F/A</span><br>价格行为方向多</td>
+      <td>159.600附近作结构止损合理，但16:01入场偏早。</td>
+      <td>+26盈利，但若按1R/2R计划，约0.39R出场。</td>
+      <td>需归类为方向单；更成熟入场在16:55-17:02区域。</td>
+      <td class="num">7.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">29</td>
+      <td>04/30 09:07:30</td>
+      <td>09:07:35</td>
+      <td>卖 / Short</td>
+      <td class="price">160.133 → 160.124</td>
+      <td class="num">5s</td>
+      <td class="num">+9<br><span class="sub">+0.9 pips</span></td>
+      <td><span class="tag">B</span><br>下行动能空</td>
+      <td>09:07大阴线下杀中顺势空。</td>
+      <td>5秒+9，干净。</td>
+      <td>优质动能短打。</td>
+      <td class="num">8.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">31</td>
+      <td>04/30 09:10:07</td>
+      <td>09:10:26</td>
+      <td>买 / Long</td>
+      <td class="price">160.09 → 160.099</td>
+      <td class="num">19s</td>
+      <td class="num">+9<br><span class="sub">+0.9 pips</span></td>
+      <td><span class="tag">A</span><br>急跌末端反弹多</td>
+      <td>160.08-160.09反复测试后接反弹，位置更成熟。</td>
+      <td>19秒+9，合理。</td>
+      <td>上一笔的修正版，高质量。</td>
+      <td class="num">8.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">33</td>
+      <td>04/30 09:56:02</td>
+      <td>09:56:06</td>
+      <td>卖 / Short</td>
+      <td class="price">160.297 → 160.287</td>
+      <td class="num">4s</td>
+      <td class="num">+10<br><span class="sub">+1.0 pips</span></td>
+      <td><span class="tag">A</span><br>160.30冲高失败空</td>
+      <td>09:50后快速上冲到160.30附近，位置非常好。</td>
+      <td>4秒+10，执行干净。</td>
+      <td>当天最佳样本之一。</td>
+      <td class="num">9.0</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">34</td>
+      <td>05/01 08:48:05</td>
+      <td>08:48:16</td>
+      <td>买 / Long</td>
+      <td class="price">156.971 → 156.977</td>
+      <td class="num">11s</td>
+      <td class="num">+6<br><span class="sub">+0.6 pips</span></td>
+      <td><span class="tag">B</span><br>上行动能跟随多</td>
+      <td>08:44后连续抬升，08:48顺势做多。</td>
+      <td>11秒+6，短打合理。</td>
+      <td>位置不是最低，但动能仍在。</td>
+      <td class="num">7.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">36</td>
+      <td>05/01 08:49:37</td>
+      <td>08:49:53</td>
+      <td>卖 / Short</td>
+      <td class="price">157.003 → 156.985</td>
+      <td class="num">16s</td>
+      <td class="num">+18<br><span class="sub">+1.8 pips</span></td>
+      <td><span class="tag">A</span><br>157.00冲高失败空</td>
+      <td>157.00附近高点打出后回落，做空位置好。</td>
+      <td>16秒+18，优秀。</td>
+      <td>优质样本。</td>
+      <td class="num">9.0</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">37</td>
+      <td>05/01 09:08:30</td>
+      <td>09:08:58</td>
+      <td>买 / Long</td>
+      <td class="price">157.127 → 157.13</td>
+      <td class="num">28s</td>
+      <td class="num">+3<br><span class="sub">+0.3 pips</span></td>
+      <td><span class="tag">C</span><br>回调中小反弹多</td>
+      <td>09:08大幅回调中做多，入场不算低位确认。</td>
+      <td>28秒+3，偏小。</td>
+      <td>方向对但止盈低效率。</td>
+      <td class="num">6.0</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">38</td>
+      <td>05/01 09:11:44</td>
+      <td>09:11:49</td>
+      <td>买 / Long</td>
+      <td class="price">157.081 → 157.093</td>
+      <td class="num">5s</td>
+      <td class="num">+12<br><span class="sub">+1.2 pips</span></td>
+      <td><span class="tag">A</span><br>急跌低位反弹多</td>
+      <td>09:11下探到157.06附近后，低位做反弹。</td>
+      <td>5秒+12，反馈快。</td>
+      <td>优质急跌反弹样本。</td>
+      <td class="num">8.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">39</td>
+      <td>05/01 09:25:40</td>
+      <td>09:25:50</td>
+      <td>买 / Long</td>
+      <td class="price">157.186 → 157.199</td>
+      <td class="num">10s</td>
+      <td class="num">+13<br><span class="sub">+1.3 pips</span></td>
+      <td><span class="tag">B</span><br>突破顺势多</td>
+      <td>09:25突破前高区域，顺势做多。</td>
+      <td>10秒+13，效率高。</td>
+      <td>强势结构下跟随有效。</td>
+      <td class="num">8.5</td>
+    </tr>
+
+    <tr class="win">
+      <td class="num">40</td>
+      <td>05/01 09:30:19</td>
+      <td>09:30:36</td>
+      <td>买 / Long</td>
+      <td class="price">157.226 → 157.256</td>
+      <td class="num">17s</td>
+      <td class="num">+30<br><span class="sub">+3.0 pips</span></td>
+      <td><span class="tag">A/B</span><br>强势回调后延续多</td>
+      <td>09:25-09:29强涨后，09:30回调到157.21附近接多。</td>
+      <td>17秒+30，质量最高之一。</td>
+      <td>大盈利样本；入场后反馈极快。</td>
+      <td class="num">9.5</td>
+    </tr></tbody>
+  </table>
+
+  <h2>四、止损单逐笔分析（16笔）</h2>
+  <p>止损单总亏损 <b class="neg">-99 JPY</b>，平均止损 <b>-6.2 JPY</b>，中位止损 <b>-3.5 JPY</b>。</p>
+  <table class="wide-table">
+    <thead>
+      <tr>
+        <th>#</th><th>入场时间</th><th>出场</th><th>方向</th><th>价格</th><th>持仓</th><th>盈亏</th><th>单型</th><th>入场时机</th><th>离场时机</th><th>评价 / 改进</th><th>评分</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr class="loss">
+      <td class="num">1</td>
+      <td>04/27 08:30:27</td>
+      <td>08:31:08</td>
+      <td>卖 / Short</td>
+      <td class="price">159.57 → 159.573</td>
+      <td class="num">41s</td>
+      <td class="num">-3<br><span class="sub">-0.3 pips</span></td>
+      <td><span class="tag">D</span><br>提前试空</td>
+      <td>接近当时上沿，想抓冲高失败，但短线多方尚未明确失败。</td>
+      <td>亏损-3快速退出，处理干净。</td>
+      <td>小亏合格；以后等不再刷新高点或回落确认再空。</td>
+      <td class="num">6.5</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">3</td>
+      <td>04/27 08:45:44</td>
+      <td>08:46:54</td>
+      <td>卖 / Short</td>
+      <td class="price">159.556 → 159.56</td>
+      <td class="num">70s</td>
+      <td class="num">-4<br><span class="sub">-0.4 pips</span></td>
+      <td><span class="tag">E</span><br>低位追空</td>
+      <td>前面已下跌一段，入场偏低。</td>
+      <td>亏损-4及时处理。</td>
+      <td>方向可能对但位置差；等反弹后再空更好。</td>
+      <td class="num">5.0</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">5</td>
+      <td>04/27 09:30:09</td>
+      <td>09:30:28</td>
+      <td>卖 / Short</td>
+      <td class="price">159.496 → 159.499</td>
+      <td class="num">19s</td>
+      <td class="num">-3<br><span class="sub">-0.3 pips</span></td>
+      <td><span class="tag">E</span><br>低位追空</td>
+      <td>接近前5分钟低点，属于下跌后的低位继续空。</td>
+      <td>-3快速退出。</td>
+      <td>执行好，但入场位置无优势。</td>
+      <td class="num">5.5</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">7</td>
+      <td>04/27 10:02:21</td>
+      <td>10:04:44</td>
+      <td>卖 / Short</td>
+      <td class="price">159.352 → 159.357</td>
+      <td class="num">143s</td>
+      <td class="num">-5<br><span class="sub">-0.5 pips</span></td>
+      <td><span class="tag">E</span><br>急跌末端追空</td>
+      <td>前5分钟已急跌到低位，再空属于追尾。</td>
+      <td>-5可接受，但143秒偏长。</td>
+      <td>跌完不追；等反弹后再空或看反弹多。</td>
+      <td class="num">4.5</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">12</td>
+      <td>04/28 09:36:05</td>
+      <td>09:36:23</td>
+      <td>买 / Long</td>
+      <td class="price">159.396 → 159.395</td>
+      <td class="num">18s</td>
+      <td class="num">-1<br><span class="sub">-0.1 pips</span></td>
+      <td><span class="tag">C</span><br>震荡中试多</td>
+      <td>震荡中间偏上位置试多，不是优势位置。</td>
+      <td>-1退出很好。</td>
+      <td>风险控制优秀；但不属于优势模型。</td>
+      <td class="num">6.0</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">15</td>
+      <td>04/29 10:07:51</td>
+      <td>10:08:04</td>
+      <td>卖 / Short</td>
+      <td class="price">159.642 → 159.661</td>
+      <td class="num">13s</td>
+      <td class="num">-19<br><span class="sub">-1.9 pips</span></td>
+      <td><span class="tag">D</span><br>提前猜顶空</td>
+      <td>10点后突然上冲，想抓假日抽动后的回落，但高点尚未确认。</td>
+      <td>13秒止损快，但金额偏大。</td>
+      <td>等不再刷新高点或跌回关键位再空。</td>
+      <td class="num">4.0</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">16</td>
+      <td>04/29 10:08:06</td>
+      <td>10:08:36</td>
+      <td>卖 / Short</td>
+      <td class="price">159.654 → 159.664</td>
+      <td class="num">30s</td>
+      <td class="num">-10<br><span class="sub">-1.0 pips</span></td>
+      <td><span class="tag">D</span><br>连续提前猜顶空</td>
+      <td>比上一笔更高，但仍未等到明确回落确认。</td>
+      <td>-10退出可接受，但连续试空成本偏高。</td>
+      <td>第一笔亏损后应提高确认条件。</td>
+      <td class="num">4.5</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">19</td>
+      <td>04/29 10:26:30</td>
+      <td>10:26:43</td>
+      <td>卖 / Short</td>
+      <td class="price">159.623 → 159.625</td>
+      <td class="num">13s</td>
+      <td class="num">-2<br><span class="sub">-0.2 pips</span></td>
+      <td><span class="tag">C/E</span><br>区间低位试空</td>
+      <td>区间里偏低位置试空，优势不清晰。</td>
+      <td>-2退出很好。</td>
+      <td>不是高位反弹空，也非明确破位。</td>
+      <td class="num">6.0</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">20</td>
+      <td>04/29 10:31:16</td>
+      <td>10:31:18</td>
+      <td>买 / Long</td>
+      <td class="price">159.598 → 159.583</td>
+      <td class="num">2s</td>
+      <td class="num">-15<br><span class="sub">-1.5 pips</span></td>
+      <td><span class="tag">D</span><br>提前接急跌反弹</td>
+      <td>急跌过程中提前做多，价格还未停止下探。</td>
+      <td>2秒止损快，但损失偏大。</td>
+      <td>等低位停顿/回收再接。</td>
+      <td class="num">4.5</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">22</td>
+      <td>04/29 10:47:06</td>
+      <td>10:59:01</td>
+      <td>卖 / Short</td>
+      <td class="price">159.598 → 159.618</td>
+      <td class="num">715s</td>
+      <td class="num">-20<br><span class="sub">-2.0 pips</span></td>
+      <td><span class="tag">F</span><br>短线单拖成长持仓</td>
+      <td>反弹到159.59附近试空可理解，但后续没有向下推进。</td>
+      <td>715秒后-20出，明显太晚。</td>
+      <td>L2短线单120秒无推进原则上退出。</td>
+      <td class="num">3.5</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">23</td>
+      <td>04/29 11:13:19</td>
+      <td>11:14:03</td>
+      <td>卖 / Short</td>
+      <td class="price">159.588 → 159.594</td>
+      <td class="num">44s</td>
+      <td class="num">-6<br><span class="sub">-0.6 pips</span></td>
+      <td><span class="tag">C</span><br>窄幅区间试空</td>
+      <td>窄幅区间上方试空，优势一般。</td>
+      <td>-6还算可控。</td>
+      <td>假日盘里这种区间试单性价比不高。</td>
+      <td class="num">6.0</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">24</td>
+      <td>04/29 11:15:29</td>
+      <td>11:17:40</td>
+      <td>买 / Long</td>
+      <td class="price">159.602 → 159.601</td>
+      <td class="num">131s</td>
+      <td class="num">-1<br><span class="sub">-0.1 pips</span></td>
+      <td><span class="tag">C</span><br>区间偏上追多</td>
+      <td>区间偏上位置追多，不是下沿反弹。</td>
+      <td>最后-1很好，但131秒略长。</td>
+      <td>入场位置不舒服；结果处理克制。</td>
+      <td class="num">5.5</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">28</td>
+      <td>04/30 09:03:47</td>
+      <td>09:04:07</td>
+      <td>卖 / Short</td>
+      <td class="price">160.174 → 160.176</td>
+      <td class="num">20s</td>
+      <td class="num">-2<br><span class="sub">-0.2 pips</span></td>
+      <td><span class="tag">D</span><br>反抽中提前试空</td>
+      <td>09:03反抽仍在上冲，冲高失败未确认。</td>
+      <td>-2退出很好。</td>
+      <td>方向后来对，但正式单应等失败确认。</td>
+      <td class="num">6.5</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">30</td>
+      <td>04/30 09:09:09</td>
+      <td>09:09:33</td>
+      <td>买 / Long</td>
+      <td class="price">160.095 → 160.092</td>
+      <td class="num">24s</td>
+      <td class="num">-3<br><span class="sub">-0.3 pips</span></td>
+      <td><span class="tag">D</span><br>提前接反弹多</td>
+      <td>09:08-09:09跌到160.09附近后想接反弹，但低点未确认。</td>
+      <td>-3快速退出。</td>
+      <td>思路可理解，入场稍早。</td>
+      <td class="num">6.0</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">32</td>
+      <td>04/30 09:29:50</td>
+      <td>09:29:58</td>
+      <td>卖 / Short</td>
+      <td class="price">160.143 → 160.147</td>
+      <td class="num">8s</td>
+      <td class="num">-4<br><span class="sub">-0.4 pips</span></td>
+      <td><span class="tag">C/D</span><br>震荡中试空</td>
+      <td>低点抬高结构下试空，确认不足。</td>
+      <td>-4快速退出正确。</td>
+      <td>入场一般，出场优秀。</td>
+      <td class="num">5.5</td>
+    </tr>
+
+    <tr class="loss">
+      <td class="num">35</td>
+      <td>05/01 08:49:20</td>
+      <td>08:49:24</td>
+      <td>卖 / Short</td>
+      <td class="price">156.991 → 156.992</td>
+      <td class="num">4s</td>
+      <td class="num">-1<br><span class="sub">-0.1 pips</span></td>
+      <td><span class="tag">D</span><br>157.00附近提前试空</td>
+      <td>157.00附近想抓冲高失败，但确认不足。</td>
+      <td>-1退出极好。</td>
+      <td>小成本试错，合格。</td>
+      <td class="num">6.5</td>
+    </tr></tbody>
+  </table>
+
+  <h2>五、关键样本</h2>
+  <div class="two-col">
+    <div class="note">
+      <h3>盈利贡献最大的5笔</h3>
+      <ul><li>05/01 09:30:19 买 / Long +30 JPY - 强势回调后延续多</li><li>04/29 16:01:32 买 / Long +26 JPY - 价格行为方向多</li><li>04/27 10:09:43 卖 / Short +20 JPY - 反弹后再空</li><li>04/28 12:35:04 买 / Long +19 JPY - 急跌末端反弹多</li><li>05/01 08:49:37 卖 / Short +18 JPY - 157.00冲高失败空</li></ul>
+    </div>
+    <div class="note">
+      <h3>最需要修正的5笔亏损</h3>
+      <ul><li>04/29 10:47:06 卖 / Short -20 JPY - 短线单拖成长持仓</li><li>04/29 10:07:51 卖 / Short -19 JPY - 提前猜顶空</li><li>04/29 10:31:16 买 / Long -15 JPY - 提前接急跌反弹</li><li>04/29 10:08:06 卖 / Short -10 JPY - 连续提前猜顶空</li><li>04/29 11:13:19 卖 / Short -6 JPY - 窄幅区间试空</li></ul>
+    </div>
+  </div>
+
+  <h2>六、执行建议</h2>
+  <div class="note">
+    <ul>
+      <li><b>默认止盈目标：</b>普通短线单以 +8 到 +12 JPY 为核心目标；低于 +5 JPY 的止盈只适合几秒内快速落袋。</li>
+      <li><b>止损报警线：</b>-10 JPY 以上单独复盘；-15 JPY 以上视为异常止损，触发短暂冷却。</li>
+      <li><b>入场确认：</b>冲高失败空要等“不再刷新高点/跌回关键位”；急跌反弹多要等“低位停顿/回收”。</li>
+      <li><b>时间规则：</b>L2短线单30秒无反馈警戒，60秒无优势准备退出，120秒无推进原则上离场。</li>
+      <li><b>模型重点：</b>急跌后的反弹多、区间下沿反弹多、冲高失败空是本周最有效的三类；中间位置的震荡试单和提前猜顶/猜底要减少。</li>
+    </ul>
+  </div>
+</body>
+</html>
