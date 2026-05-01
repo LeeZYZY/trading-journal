@@ -133,6 +133,10 @@
       background: linear-gradient(90deg, var(--accent), transparent);
     }
 
+    .report-card.pdf::before {
+      background: linear-gradient(90deg, var(--accent2), transparent);
+    }
+
     .report-date {
       font-family: 'DM Mono', monospace;
       font-size: 12px;
@@ -145,6 +149,13 @@
       font-size: 18px;
       line-height: 1.35;
       color: #fff;
+      margin-bottom: 18px;
+    }
+
+    .report-desc {
+      color: var(--text2);
+      font-size: 13px;
+      line-height: 1.7;
       margin-bottom: 18px;
     }
 
@@ -199,138 +210,6 @@
       line-height: 1.8;
     }
 
-    .pdf-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    .pdf-note {
-      color: var(--text2);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    .pdf-refresh {
-      cursor: pointer;
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      color: var(--accent);
-      background: rgba(0,229,160,.08);
-      border: 1px solid rgba(0,229,160,.35);
-      border-radius: 999px;
-      padding: 9px 14px;
-      transition: background .2s ease, border-color .2s ease;
-    }
-
-    .pdf-refresh:hover {
-      background: rgba(0,229,160,.14);
-      border-color: var(--accent);
-    }
-
-    .pdf-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 22px;
-    }
-
-    .pdf-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .pdf-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent2), transparent);
-    }
-
-    .pdf-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    .pdf-title {
-      font-family: 'Unbounded', sans-serif;
-      font-size: 18px;
-      line-height: 1.35;
-      color: #fff;
-      margin-bottom: 8px;
-      word-break: break-word;
-    }
-
-    .pdf-meta {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      color: var(--text2);
-    }
-
-    .pdf-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .pdf-button {
-      display: inline-block;
-      text-decoration: none;
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      color: var(--accent);
-      border: 1px solid rgba(0,229,160,.35);
-      background: rgba(0,229,160,.08);
-      border-radius: 999px;
-      padding: 8px 13px;
-      transition: background .2s ease, border-color .2s ease;
-    }
-
-    .pdf-button:hover {
-      background: rgba(0,229,160,.14);
-      border-color: var(--accent);
-    }
-
-    .pdf-frame {
-      width: 100%;
-      height: 760px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: #0f141d;
-    }
-
-    .loading {
-      background: rgba(22,28,40,.5);
-      border: 1px dashed var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      color: var(--text2);
-      line-height: 1.8;
-      font-family: 'DM Mono', monospace;
-      font-size: 13px;
-    }
-
-    .error {
-      background: rgba(244,63,94,.08);
-      border: 1px solid rgba(244,63,94,.28);
-      border-radius: 16px;
-      padding: 24px;
-      color: #fda4af;
-      line-height: 1.8;
-      font-size: 13px;
-    }
-
     .footer {
       margin-top: 64px;
       padding-top: 24px;
@@ -344,10 +223,6 @@
     @media (max-width: 700px) {
       .kpis {
         grid-template-columns: 1fr;
-      }
-
-      .pdf-frame {
-        height: 520px;
       }
     }
   </style>
@@ -367,7 +242,7 @@
 
     <section class="report-grid">
       <a class="report-card" href="reports/2026-W18.html">
-        <div class="report-date">2026.04.27 — 2026.05.01</div>
+        <div class="report-date">2026.04.27 - 2026.05.01</div>
         <div class="report-title">USD/JPY 週次トレード分析レポート</div>
 
         <div class="kpis">
@@ -397,142 +272,32 @@
 
     <div class="section-title">PDF Archive</div>
 
-    <div class="pdf-toolbar">
-      <p class="pdf-note">
-        <strong>pdfs/</strong> フォルダ内のPDFを自動で読み込み、ここに表示します。
-      </p>
+    <section class="report-grid">
+      <a class="report-card pdf" href="pdfs.html">
+        <div class="report-date">AUTO LIST</div>
+        <div class="report-title">PDFファイル一覧</div>
 
-      <button class="pdf-refresh" type="button" onclick="loadPdfs()">
-        Reload PDFs
-      </button>
-    </div>
+        <p class="report-desc">
+          pdfs フォルダ内のPDFを自動で読み込み、ファイル名とリンクだけを一覧表示します。
+        </p>
 
-    <section id="pdfList" class="pdf-grid">
-      <div class="loading">Loading PDFs from GitHub...</div>
+        <div class="tag-row">
+          <span class="tag">PDF</span>
+          <span class="tag">archive</span>
+          <span class="tag">auto index</span>
+        </div>
+      </a>
     </section>
 
     <div class="section-title">Next</div>
 
     <div class="empty">
       新しいHTMLレポートを追加するときは <strong>reports/YYYY-WW.html</strong> に保存し、このトップページにカードを1枚追加します。<br>
-      PDFを追加するときは <strong>pdfs/</strong> フォルダにアップロードすれば、このページに自動表示されます。<br>
+      PDFを追加するときは <strong>pdfs/</strong> フォルダにアップロードすれば、<strong>pdfs.html</strong> に自動表示されます。<br>
       例：<strong>reports/2026-W19.html</strong>、<strong>pdfs/2026-W19-report.pdf</strong>
     </div>
 
     <div class="footer">Generated for GitHub Pages · Static HTML archive</div>
   </main>
-
-  <script>
-    const GITHUB_API_URL = 'https://api.github.com/repos/LeeZYZY/trading-journal/contents/pdfs';
-
-    function formatFileSize(bytes) {
-      if (!bytes && bytes !== 0) return '';
-      if (bytes < 1024) return bytes + ' B';
-      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-      return (bytes / 1024 / 1024).toFixed(1) + ' MB';
-    }
-
-    function prettyPdfName(fileName) {
-      return fileName
-        .replace(/\.pdf$/i, '')
-        .replace(/[-_]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
-
-    function makePagesPdfUrl(fileName) {
-      return 'pdfs/' + encodeURIComponent(fileName);
-    }
-
-    function renderPdfCard(file) {
-      const pdfUrl = makePagesPdfUrl(file.name);
-      const title = prettyPdfName(file.name);
-      const size = formatFileSize(file.size);
-
-      return `
-        <article class="pdf-card">
-          <div class="pdf-head">
-            <div>
-              <div class="pdf-title">${title}</div>
-              <div class="pdf-meta">${file.name}${size ? ' · ' + size : ''}</div>
-            </div>
-
-            <div class="pdf-actions">
-              <a class="pdf-button" href="${pdfUrl}" target="_blank" rel="noopener">
-                Open PDF
-              </a>
-              <a class="pdf-button" href="${pdfUrl}" download>
-                Download
-              </a>
-            </div>
-          </div>
-
-          <iframe
-            class="pdf-frame"
-            src="${pdfUrl}">
-          </iframe>
-        </article>
-      `;
-    }
-
-    async function loadPdfs() {
-      const pdfList = document.getElementById('pdfList');
-
-      pdfList.innerHTML = '<div class="loading">Loading PDFs from GitHub...</div>';
-
-      try {
-        const response = await fetch(GITHUB_API_URL, {
-          headers: {
-            'Accept': 'application/vnd.github+json'
-          }
-        });
-
-        if (response.status === 404) {
-          pdfList.innerHTML = `
-            <div class="empty">
-              <strong>pdfs/</strong> フォルダがまだ見つかりません。<br>
-              GitHubで <strong>pdfs/.gitkeep</strong> を作るか、PDFファイルを1つアップロードしてください。
-            </div>
-          `;
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error('GitHub API error: ' + response.status);
-        }
-
-        const files = await response.json();
-
-        const pdfFiles = files
-          .filter(file => file.type === 'file' && file.name.toLowerCase().endsWith('.pdf'))
-          .sort((a, b) => b.name.localeCompare(a.name));
-
-        if (pdfFiles.length === 0) {
-          pdfList.innerHTML = `
-            <div class="empty">
-              <strong>pdfs/</strong> フォルダ内にPDFがありません。<br>
-              PDFファイルをアップロードすると、ここに自動表示されます。
-            </div>
-          `;
-          return;
-        }
-
-        pdfList.innerHTML = pdfFiles.map(renderPdfCard).join('');
-
-      } catch (error) {
-        console.error(error);
-
-        pdfList.innerHTML = `
-          <div class="error">
-            PDF一覧の読み込みに失敗しました。<br>
-            GitHub Pagesの反映待ち、API制限、または <strong>pdfs/</strong> フォルダ名を確認してください。<br>
-            Error: ${error.message}
-          </div>
-        `;
-      }
-    }
-
-    loadPdfs();
-  </script>
 </body>
 </html>
