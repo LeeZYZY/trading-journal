@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trading Journal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@300;400;500&family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0d12;
+      --surface: #111620;
+      --card: #161c28;
+      --border: #1e2738;
+      --accent: #00e5a0;
+      --accent2: #3b82f6;
+      --red: #f43f5e;
+      --text: #e2e8f0;
+      --text2: #8892a4;
+      --gold: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans JP', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+    .badge {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 11px;
+      letter-spacing: .2em;
+      color: var(--accent);
+      background: rgba(0,229,160,.08);
+      border: 1px solid rgba(0,229,160,.2);
+      padding: 5px 13px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: 'Unbounded', sans-serif;
+      font-size: clamp(32px, 6vw, 64px);
+      line-height: .95;
+      letter-spacing: -.04em;
+      color: #fff;
+      margin-bottom: 18px;
+    }
+    h1 span { color: var(--accent); }
+    .lead {
+      color: var(--text2);
+      font-size: 15px;
+      line-height: 1.8;
+      max-width: 660px;
+      margin-bottom: 44px;
+    }
+    .section-title {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 11px;
+      letter-spacing: .2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 42px 0 20px;
+    }
+    .section-title::after {
+      content: '';
+      height: 1px;
+      background: var(--border);
+      flex: 1;
+    }
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .report-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .report-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      background: #1a2032;
+    }
+    .report-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+    .report-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 12px;
+    }
+    .report-title {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 18px;
+      line-height: 1.35;
+      color: #fff;
+      margin-bottom: 18px;
+    }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .mini-kpi {
+      background: rgba(10,13,18,.55);
+      border: 1px solid rgba(30,39,56,.8);
+      border-radius: 10px;
+      padding: 12px 10px;
+    }
+    .mini-label {
+      font-size: 10px;
+      color: var(--text2);
+      margin-bottom: 6px;
+    }
+    .mini-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 15px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 9px;
+    }
+    .empty {
+      background: rgba(22,28,40,.5);
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      color: var(--text2);
+      line-height: 1.8;
+    }
+    .footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: #4a5568;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .04em;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrapper">
+    <div class="badge">PERSONAL TRADING ARCHIVE</div>
+    <h1>Trading<br><span>Journal</span></h1>
+    <p class="lead">
+      週次レポート、日次ログ、トレード反省を保存するための静的アーカイブ。HTMLファイルを追加してGitHub Pagesに反映するだけで、取引記録をブログのように積み上げられます。
+    </p>
+
+    <div class="section-title">Reports</div>
+    <section class="report-grid">
+      <a class="report-card" href="reports/2026-W18.html">
+        <div class="report-date">2026.04.27 — 2026.05.01</div>
+        <div class="report-title">USD/JPY 週次トレード分析レポート</div>
+        <div class="kpis">
+          <div class="mini-kpi">
+            <div class="mini-label">週間損益</div>
+            <div class="mini-value">+174円</div>
+          </div>
+          <div class="mini-kpi">
+            <div class="mini-label">取引数</div>
+            <div class="mini-value">40</div>
+          </div>
+          <div class="mini-kpi">
+            <div class="mini-label">勝率</div>
+            <div class="mini-value">60.0%</div>
+          </div>
+        </div>
+        <div class="tag-row">
+          <span class="tag">USD/JPY</span>
+          <span class="tag">weekly</span>
+          <span class="tag">scalping</span>
+        </div>
+      </a>
+    </section>
+
+    <div class="section-title">Next</div>
+    <div class="empty">
+      新しいレポートを追加するときは <strong>reports/YYYY-WW.html</strong> に保存し、このトップページにカードを1枚追加します。<br>
+      例：<strong>reports/2026-W19.html</strong>、<strong>reports/2026-05-04.html</strong>
+    </div>
+
+    <div class="footer">Generated for GitHub Pages · Static HTML archive</div>
+  </main>
+</body>
+</html>
